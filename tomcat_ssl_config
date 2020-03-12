@@ -1,0 +1,32 @@
+Configuring Spring Euraka server and client with SSL on external tomcat
+
+* Generate self signed certificate for both server and client
+  -> Generate keystore
+    -> keytool -genkey -keyalg RSA -noprompt -alias postexam -dname "CN=localhost, OU=NA, O=NA, L=NA, S=NA, C=NA" -keystore postexam.jks -validity 9999 -storepass changeme -keypass changeme
+    -> keytool -genkey -keyalg RSA -noprompt -alias client -dname "CN=localhost, OU=NA, O=NA, L=NA, S=NA, C=NA" -keystore client.jks -validity 9999 -storepass changeme -keypass changeme
+  -> Generate certificate from keystore
+    -> keytool -export -alias postexam -file clientpost.crt -keystore postexam.jks
+    -> keytool -export -alias eureka -file eureka.crt -keystore eureka.jks
+  -> Import certificate into jvm cacerts
+    -> keytool -import -alias postexam -keystore "C:\Program Files\Java\jre1.8.0_231\lib\security\cacerts" -file clientpost.crt
+    -> keytool -import -alias eureka -keystore $JAVA_HOME/jre/lib/security/cacerts -file eureka.crt
+  -> store client.jks and eureka.jks in tomcat's conf folder of client and eureka server respectively.
+  
+* Tomcat configuration (conf/server.xml)
+  -> <Connector port="8080" protocol="org.apache.coyote.http11.Http11NioProtocol"
+               maxThreads="150" SSLEnabled="true" 
+               compression="off" scheme="https" secure="true"
+               keystoreFile="conf/client.jks" keystorePass="changeme"
+               SSLVerifyClient="none" SSLProtocol="TLSv1.2" />
+  -> <Connector port="8761" protocol="org.apache.coyote.http11.Http11NioProtocol"
+               maxThreads="150" SSLEnabled="true" 
+               compression="off" scheme="https" secure="true"
+               keystoreFile="conf/eureka.jks" keystorePass="changeme"
+               SSLVerifyClient="none" SSLProtocol="TLSv1.2" />
+  -> Make sure the compression attribute is off. If not you may get "unable to get heartbeat" error
+  
+  -> Add files on the following path if you are using eclipse
+	1.clinetpost
+	2. postexam.jks
+  D:\workspace_05_12_2019\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\conf
+  
