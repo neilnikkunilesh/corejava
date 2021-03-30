@@ -29,9 +29,9 @@ class Employee implements Comparable<Employee>{
 public class CollectionArrayList{
     public static void main(String[] args) {
         List<Employee> empList = new ArrayList<Employee>();
-        empList.add(new Employee(101, "Nilesh", "ACTS", 60000));
-        empList.add(new Employee(102, "Kulvant", "IAF", 42000));
-        empList.add(new Employee(103, "Aniket", "ACTS Online", 55000));
+        empList.add(new Employee(101, "John", "XYZ", 60000));
+        empList.add(new Employee(102, "Kinson", "ABC", 42000));
+        empList.add(new Employee(103, "Orange", "RTY Online", 55000));
 
         // for(Employee e : empList){
         //     System.out.println(e);
